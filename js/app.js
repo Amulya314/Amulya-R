@@ -2,13 +2,16 @@
 let allJobs = [];
 let filteredJobs = [];
 let savedJobs = [];
+let userPreferences = null;
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     loadJobsData();
     loadSavedJobs();
+    loadPreferences();
     initializeNavigation();
     initializeFilters();
+    initializeSettings();
     renderJobs();
 });
 
@@ -19,15 +22,178 @@ function loadJobsData() {
     filteredJobs = [...allJobs];
 }
 
+// Load user preferences
+function loadPreferences() {
+    const saved = localStorage.getItem('jobTrackerPreferences');
+    userPreferences = saved ? JSON.parse(saved) : null;
+    
+    if (userPreferences) {
+        // Prefill settings form
+        document.getElementById('roleKeywords').value = userPreferences.roleKeywords || '';
+        document.getElementById('skills').value = userPreferences.skills || '';
+        document.getElementById('experienceLevel').value = userPreferences.experienceLevel || '';
+        document.getElementById('minMatchScore').value = userPreferences.minMatchScore || 40;
+        document.getElementById('scoreValue').textContent = userPreferences.minMatchScore || 40;
+        
+        // Set multi-select locations
+        const locationsSelect = document.getElementById('preferredLocations');
+        Array.from(locationsSelect.options).forEach(option => {
+            option.selected = userPreferences.preferredLocations && userPreferences.preferredLocations.includes(option.value);
+        });
+        
+        // Set work mode checkboxes
+        document.getElementById('modeRemote').checked = userPreferences.preferredMode && userPreferences.preferredMode.includes('Remote');
+        document.getElementById('modeHybrid').checked = userPreferences.preferredMode && userPreferences.preferredMode.includes('Hybrid');
+        document.getElementById('modeOnsite').checked = userPreferences.preferredMode && userPreferences.preferredMode.includes('Onsite');
+        
+        // Hide preferences banner
+        document.getElementById('preferencesBanner').style.display = 'none';
+    } else {
+        // Show preferences banner
+        document.getElementById('preferencesBanner').style.display = 'block';
+    }
+}
+
+// Save user preferences
+function savePreferences() {
+    const preferredLocations = Array.from(document.getElementById('preferredLocations').selectedOptions)
+        .map(option => option.value);
+    
+    const preferredMode = [];
+    if (document.getElementById('modeRemote').checked) preferredMode.push('Remote');
+    if (document.getElementById('modeHybrid').checked) preferredMode.push('Hybrid');
+    if (document.getElementById('modeOnsite').checked) preferredMode.push('Onsite');
+    
+    userPreferences = {
+        roleKeywords: document.getElementById('roleKeywords').value,
+        preferredLocations: preferredLocations,
+        preferredMode: preferredMode,
+        experienceLevel: document.getElementById('experienceLevel').value,
+        skills: document.getElementById('skills').value,
+        minMatchScore: parseInt(document.getElementById('minMatchScore').value)
+    };
+    
+    localStorage.setItem('jobTrackerPreferences', JSON.stringify(userPreferences));
+    
+    // Hide banner and re-render jobs
+    document.getElementById('preferencesBanner').style.display = 'none';
+    renderJobs();
+    
+    // Show success feedback
+    const saveBtn = event.target;
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saved ✓';
+    setTimeout(() => {
+        saveBtn.textContent = originalText;
+    }, 2000);
+}
+
+// Clear preferences
+function clearPreferences() {
+    if (confirm('Are you sure you want to clear all preferences?')) {
+        localStorage.removeItem('jobTrackerPreferences');
+        userPreferences = null;
+        
+        // Reset form
+        document.getElementById('roleKeywords').value = '';
+        document.getElementById('skills').value = '';
+        document.getElementById('experienceLevel').value = '';
+        document.getElementById('minMatchScore').value = 40;
+        document.getElementById('scoreValue').textContent = '40';
+        
+        // Reset locations
+        Array.from(document.getElementById('preferredLocations').options).forEach(option => {
+            option.selected = false;
+        });
+        
+        // Reset checkboxes
+        document.getElementById('modeRemote').checked = false;
+        document.getElementById('modeHybrid').checked = false;
+        document.getElementById('modeOnsite').checked = false;
+        
+        // Show banner and re-render
+        document.getElementById('preferencesBanner').style.display = 'block';
+        renderJobs();
+    }
+}
+
+// Initialize settings
+function initializeSettings() {
+    const scoreSlider = document.getElementById('minMatchScore');
+    const scoreValue = document.getElementById('scoreValue');
+    
+    scoreSlider.addEventListener('input', function() {
+        scoreValue.textContent = this.value;
+    });
+}
+
 // Load saved jobs from localStorage
 function loadSavedJobs() {
     const saved = localStorage.getItem('savedJobs');
     savedJobs = saved ? JSON.parse(saved) : [];
 }
 
-// Save jobs to localStorage
-function saveToLocalStorage() {
-    localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+// Calculate match score for a job
+function calculateMatchScore(job) {
+    if (!userPreferences) return 0;
+    
+    let score = 0;
+    
+    // +25 if any roleKeyword appears in job.title (case-insensitive)
+    const roleKeywords = userPreferences.roleKeywords.split(',').map(k => k.trim().toLowerCase());
+    const titleLower = job.title.toLowerCase();
+    if (roleKeywords.some(keyword => keyword && titleLower.includes(keyword))) {
+        score += 25;
+    }
+    
+    // +15 if any roleKeyword appears in job.description
+    const descriptionLower = job.description.toLowerCase();
+    if (roleKeywords.some(keyword => keyword && descriptionLower.includes(keyword))) {
+        score += 15;
+    }
+    
+    // +15 if job.location matches preferredLocations
+    if (userPreferences.preferredLocations && userPreferences.preferredLocations.includes(job.location)) {
+        score += 15;
+    }
+    
+    // +10 if job.mode matches preferredMode
+    if (userPreferences.preferredMode && userPreferences.preferredMode.includes(job.mode)) {
+        score += 10;
+    }
+    
+    // +10 if job.experience matches experienceLevel
+    if (userPreferences.experienceLevel && job.experience === userPreferences.experienceLevel) {
+        score += 10;
+    }
+    
+    // +15 if overlap between job.skills and user.skills
+    const userSkills = userPreferences.skills.split(',').map(s => s.trim().toLowerCase());
+    const jobSkills = job.skills.map(s => s.toLowerCase());
+    if (userSkills.some(skill => skill && jobSkills.includes(skill))) {
+        score += 15;
+    }
+    
+    // +5 if postedDaysAgo <= 2
+    if (job.postedDaysAgo <= 2) {
+        score += 5;
+    }
+    
+    // +5 if source is LinkedIn
+    if (job.source === 'LinkedIn') {
+        score += 5;
+    }
+    
+    // Cap score at 100
+    return Math.min(score, 100);
+}
+
+// Get match score badge color
+function getMatchScoreColor(score) {
+    if (score >= 80) return 'match-high';
+    if (score >= 60) return 'match-medium';
+    if (score >= 40) return 'match-low';
+    return 'match-very-low';
 }
 
 // Initialize navigation
@@ -78,6 +244,11 @@ function initializeNavigation() {
     });
 }
 
+// Save jobs to localStorage
+function saveToLocalStorage() {
+    localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+}
+
 // Initialize filters
 function initializeFilters() {
     const filterInputs = document.querySelectorAll('.filter-input');
@@ -85,6 +256,12 @@ function initializeFilters() {
         input.addEventListener('change', applyFilters);
         input.addEventListener('input', applyFilters);
     });
+    
+    // Add match toggle listener
+    const showOnlyMatches = document.getElementById('showOnlyMatches');
+    if (showOnlyMatches) {
+        showOnlyMatches.addEventListener('change', applyFilters);
+    }
 }
 
 // Apply filters
@@ -95,8 +272,16 @@ function applyFilters() {
     const experience = document.getElementById('experienceFilter').value;
     const source = document.getElementById('sourceFilter').value;
     const sort = document.getElementById('sortFilter').value;
+    const showOnlyMatches = document.getElementById('showOnlyMatches').checked;
 
-    filteredJobs = allJobs.filter(job => {
+    // Start with all jobs and calculate match scores
+    filteredJobs = allJobs.map(job => ({
+        ...job,
+        matchScore: calculateMatchScore(job)
+    }));
+    
+    // Apply filters
+    filteredJobs = filteredJobs.filter(job => {
         const matchesKeyword = !keyword || 
             job.title.toLowerCase().includes(keyword) || 
             job.company.toLowerCase().includes(keyword);
@@ -104,8 +289,9 @@ function applyFilters() {
         const matchesMode = !mode || job.mode === mode;
         const matchesExperience = !experience || job.experience === experience;
         const matchesSource = !source || job.source === source;
+        const matchesThreshold = !showOnlyMatches || job.matchScore >= (userPreferences?.minMatchScore || 40);
 
-        return matchesKeyword && matchesLocation && matchesMode && matchesExperience && matchesSource;
+        return matchesKeyword && matchesLocation && matchesMode && matchesExperience && matchesSource && matchesThreshold;
     });
 
     // Apply sorting
@@ -115,6 +301,9 @@ function applyFilters() {
             break;
         case 'oldest':
             filteredJobs.sort((a, b) => b.postedDaysAgo - a.postedDaysAgo);
+            break;
+        case 'match-score':
+            filteredJobs.sort((a, b) => b.matchScore - a.matchScore);
             break;
         case 'salary-high':
             filteredJobs.sort((a, b) => parseSalary(b.salaryRange) - parseSalary(a.salaryRange));
@@ -144,11 +333,23 @@ function renderJobs() {
     const jobsContainer = document.getElementById('jobsContainer');
     if (!jobsContainer) return;
 
+    // Show preferences banner if no preferences set
+    if (!userPreferences) {
+        jobsContainer.innerHTML = `
+            <div class="preferences-banner">
+                <h3>Set your preferences to activate intelligent matching.</h3>
+                <p>Go to Settings to configure your job preferences and see personalized match scores.</p>
+                <button class="btn btn-primary" onclick="navigateToSettings()">Set Preferences</button>
+            </div>
+        `;
+        return;
+    }
+
     if (filteredJobs.length === 0) {
         jobsContainer.innerHTML = `
             <div class="empty-state">
-                <h3>No jobs found</h3>
-                <p>Try adjusting your filters to see more opportunities.</p>
+                <h3>No roles match your criteria</h3>
+                <p>Adjust filters or lower threshold to see more opportunities.</p>
             </div>
         `;
         return;
@@ -163,12 +364,17 @@ function createJobCard(job) {
     const postedText = job.postedDaysAgo === 0 ? 'Today' : 
                       job.postedDaysAgo === 1 ? '1 day ago' : 
                       `${job.postedDaysAgo} days ago`;
+    
+    const matchScore = job.matchScore || 0;
+    const matchColorClass = getMatchScoreColor(matchScore);
+    const matchScoreDisplay = userPreferences ? `<span class="match-score ${matchColorClass}">${matchScore}%</span>` : '';
 
     return `
         <div class="job-card">
             <div class="job-header">
                 <div class="job-title">${job.title}</div>
                 <div class="job-company">${job.company}</div>
+                ${matchScoreDisplay}
             </div>
             
             <div class="job-details">
