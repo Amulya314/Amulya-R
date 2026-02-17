@@ -90,6 +90,15 @@
                     </div>
                     <div class="filter-row">
                         <div class="filter-group">
+                            <select id="statusFilter" class="filter-input">
+                                <option value="">All Statuses</option>
+                                <option value="Not Applied">Not Applied</option>
+                                <option value="Applied">Applied</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Selected">Selected</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
                             <select id="experienceFilter" class="filter-input">
                                 <option value="">All Experience</option>
                                 <option value="Fresher">Fresher</option>
@@ -240,7 +249,8 @@
                     
                     <div class="form-actions">
                         <button class="btn btn-primary" onclick="savePreferences()">Save Preferences</button>
-                        <button class="btn btn-secondary" onclick="clearPreferences()">Clear All</button>
+                        <button class="btn btn-secondary" onclick="clearPreferences()">Clear Preferences</button>
+                        <button class="btn btn-secondary" onclick="clearAllData()">Clear All Data</button>
                     </div>
                 </div>
             </div>

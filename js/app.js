@@ -3,12 +3,14 @@ let allJobs = [];
 let filteredJobs = [];
 let savedJobs = [];
 let userPreferences = null;
+let jobStatuses = {}; // Track job statuses
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     loadJobsData();
     loadSavedJobs();
     loadPreferences();
+    loadJobStatuses(); // Load job statuses
     initializeNavigation();
     initializeFilters();
     initializeSettings();
@@ -117,6 +119,39 @@ function clearPreferences() {
     }
 }
 
+// Clear all data
+function clearAllData() {
+    if (confirm('Are you sure you want to clear all data? This will remove preferences, saved jobs, and job statuses.')) {
+        localStorage.clear();
+        userPreferences = null;
+        savedJobs = [];
+        jobStatuses = {};
+        
+        // Reset all forms
+        document.getElementById('roleKeywords').value = '';
+        document.getElementById('skills').value = '';
+        document.getElementById('experienceLevel').value = '';
+        document.getElementById('minMatchScore').value = 40;
+        document.getElementById('scoreValue').textContent = '40';
+        
+        // Reset locations
+        Array.from(document.getElementById('preferredLocations').options).forEach(option => {
+            option.selected = false;
+        });
+        
+        // Reset checkboxes
+        document.getElementById('modeRemote').checked = false;
+        document.getElementById('modeHybrid').checked = false;
+        document.getElementById('modeOnsite').checked = false;
+        
+        // Show banner and re-render
+        document.getElementById('preferencesBanner').style.display = 'block';
+        renderJobs();
+        
+        showStatusToast('All data cleared');
+    }
+}
+
 // Initialize settings
 function initializeSettings() {
     const scoreSlider = document.getElementById('minMatchScore');
@@ -127,10 +162,35 @@ function initializeSettings() {
     });
 }
 
-// Load saved jobs from localStorage
-function loadSavedJobs() {
-    const saved = localStorage.getItem('savedJobs');
-    savedJobs = saved ? JSON.parse(saved) : [];
+// Load job statuses from localStorage
+function loadJobStatuses() {
+    const saved = localStorage.getItem('jobTrackerStatus');
+    jobStatuses = saved ? JSON.parse(saved) : {};
+}
+
+// Save job statuses to localStorage
+function saveJobStatuses() {
+    localStorage.setItem('jobTrackerStatus', JSON.stringify(jobStatuses));
+}
+
+// Update job status
+function updateJobStatus(jobId, status) {
+    jobStatuses[jobId] = status;
+    saveJobStatuses();
+    showStatusToast(status);
+    renderJobs(); // Re-render to reflect status change
+}
+
+// Show status toast notification
+function showStatusToast(status) {
+    const toast = document.createElement('div');
+    toast.className = 'status-toast';
+    toast.textContent = `Status updated: ${status}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
 // Calculate match score for a job
@@ -244,9 +304,10 @@ function initializeNavigation() {
     });
 }
 
-// Save jobs to localStorage
-function saveToLocalStorage() {
-    localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+// Load saved jobs from localStorage
+function loadSavedJobs() {
+    const saved = localStorage.getItem('savedJobs');
+    savedJobs = saved ? JSON.parse(saved) : [];
 }
 
 // Initialize filters
@@ -273,6 +334,7 @@ function applyFilters() {
     const source = document.getElementById('sourceFilter').value;
     const sort = document.getElementById('sortFilter').value;
     const showOnlyMatches = document.getElementById('showOnlyMatches').checked;
+    const statusFilter = document.getElementById('statusFilter')?.value || '';
 
     // Start with all jobs and calculate match scores
     filteredJobs = allJobs.map(job => ({
@@ -290,8 +352,10 @@ function applyFilters() {
         const matchesExperience = !experience || job.experience === experience;
         const matchesSource = !source || job.source === source;
         const matchesThreshold = !showOnlyMatches || job.matchScore >= (userPreferences?.minMatchScore || 40);
+        const jobStatus = jobStatuses[job.id] || 'Not Applied';
+        const matchesStatus = !statusFilter || jobStatus === statusFilter;
 
-        return matchesKeyword && matchesLocation && matchesMode && matchesExperience && matchesSource && matchesThreshold;
+        return matchesKeyword && matchesLocation && matchesMode && matchesExperience && matchesSource && matchesThreshold && matchesStatus;
     });
 
     // Apply sorting
@@ -368,6 +432,11 @@ function createJobCard(job) {
     const matchScore = job.matchScore || 0;
     const matchColorClass = getMatchScoreColor(matchScore);
     const matchScoreDisplay = userPreferences ? `<span class="match-score ${matchColorClass}">${matchScore}%</span>` : '';
+    
+    // Get job status and determine button color
+    const jobStatus = jobStatuses[job.id] || 'Not Applied';
+    const statusColorClass = getStatusColorClass(jobStatus);
+    const statusButtons = createStatusButtons(job.id, jobStatus);
 
     return `
         <div class="job-card">
@@ -375,6 +444,7 @@ function createJobCard(job) {
                 <div class="job-title">${job.title}</div>
                 <div class="job-company">${job.company}</div>
                 ${matchScoreDisplay}
+                <span class="job-status-badge ${statusColorClass}">${jobStatus}</span>
             </div>
             
             <div class="job-details">
@@ -392,12 +462,39 @@ function createJobCard(job) {
             </div>
             
             <div class="job-actions">
+                ${statusButtons}
                 <button class="btn btn-secondary" onclick="viewJob(${job.id})">View</button>
                 <button class="btn ${isSaved ? 'btn-success' : 'btn-secondary'}" onclick="toggleSaveJob(${job.id})">
                     ${isSaved ? 'Saved ✓' : 'Save'}
                 </button>
                 <button class="btn btn-primary" onclick="applyForJob('${job.applyUrl}')">Apply</button>
             </div>
+        </div>
+    `;
+}
+
+// Get status color class
+function getStatusColorClass(status) {
+    switch(status) {
+        case 'Not Applied': return 'status-neutral';
+        case 'Applied': return 'status-applied';
+        case 'Rejected': return 'status-rejected';
+        case 'Selected': return 'status-selected';
+        default: return 'status-neutral';
+    }
+}
+
+// Create status buttons
+function createStatusButtons(jobId, currentStatus) {
+    const statuses = ['Not Applied', 'Applied', 'Rejected', 'Selected'];
+    
+    return `
+        <div class="status-buttons">
+            ${statuses.map(status => {
+                const isActive = status === currentStatus;
+                const colorClass = getStatusColorClass(status);
+                return `<button class="status-btn ${isActive ? 'active' : ''} ${colorClass}" onclick="updateJobStatus(${jobId}, '${status}')">${status}</button>`;
+            }).join('')}
         </div>
     `;
 }
@@ -597,6 +694,9 @@ function renderDigest(digest) {
     `;
     
     document.getElementById('digestContent').innerHTML = digestHTML;
+    
+    // Add recent status updates
+    setTimeout(() => addRecentStatusUpdatesToDigest(), 100);
 }
 
 // Create digest job item
@@ -664,6 +764,58 @@ function createEmailDraft() {
     const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
     
     window.open(mailtoUrl, '_blank');
+}
+
+// Add recent status updates to digest
+function addRecentStatusUpdatesToDigest() {
+    const today = new Date().toISOString().split('T')[0];
+    const digestKey = `jobTrackerDigest_${today}`;
+    const digest = JSON.parse(localStorage.getItem(digestKey));
+    
+    if (!digest) return;
+    
+    // Get recent status changes
+    const recentStatuses = [];
+    const statusKeys = Object.keys(jobStatuses);
+    
+    statusKeys.forEach(jobId => {
+        const job = allJobs.find(j => j.id === parseInt(jobId));
+        if (job && jobStatuses[jobId]) {
+            recentStatuses.push({
+                title: job.title,
+                company: job.company,
+                status: jobStatuses[jobId],
+                date: new Date().toLocaleDateString()
+            });
+        }
+    });
+    
+    // Add status updates section to digest
+    if (recentStatuses.length > 0) {
+        const statusUpdatesHTML = `
+            <div class="digest-status-updates">
+                <h3>Recent Status Updates</h3>
+                <div class="status-list">
+                    ${recentStatuses.map(update => `
+                        <div class="status-item">
+                            <div class="status-job-info">
+                                <div class="status-job-title">${update.title}</div>
+                                <div class="status-job-company">${update.company}</div>
+                            </div>
+                            <div class="status-job-status ${getStatusColorClass(update.status)}">${update.status}</div>
+                            <div class="status-date">${update.date}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // Insert status updates after digest jobs
+        const digestJobsElement = document.querySelector('.digest-jobs');
+        if (digestJobsElement) {
+            digestJobsElement.insertAdjacentHTML('afterend', statusUpdatesHTML);
+        }
+    }
 }
 
 // Navigate to settings

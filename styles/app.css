@@ -557,6 +557,176 @@
     flex-wrap: wrap;
 }
 
+/* ===== JOB STATUS TRACKING ===== */
+.job-status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px var(--space-xs);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: var(--space-sm);
+}
+
+.status-neutral {
+    background-color: var(--color-text-secondary);
+    color: white;
+}
+
+.status-applied {
+    background-color: #2563EB;
+    color: white;
+}
+
+.status-rejected {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+.status-selected {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.status-buttons {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    margin-top: var(--space-xs);
+}
+
+.status-btn {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px var(--space-xs);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-btn:hover {
+    opacity: 0.8;
+}
+
+.status-btn.active {
+    font-weight: 600;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.status-btn.status-neutral {
+    background-color: var(--color-text-secondary);
+    color: white;
+    border-color: var(--color-text-secondary);
+}
+
+.status-btn.status-applied {
+    background-color: #2563EB;
+    color: white;
+    border-color: #2563EB;
+}
+
+.status-btn.status-rejected {
+    background-color: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.status-btn.status-selected {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+/* ===== STATUS TOAST ===== */
+.status-toast {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    background-color: var(--color-text-primary);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: slideInRight var(--transition-normal) ease-in-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== DIGEST STATUS UPDATES ===== */
+.digest-status-updates {
+    background-color: var(--color-background);
+    border-top: 2px solid var(--color-accent);
+    padding: var(--space-lg);
+    margin-top: var(--space-md);
+}
+
+.digest-status-updates h3 {
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
+    text-align: center;
+}
+
+.status-list {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-card-background);
+}
+
+.status-job-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.status-job-title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.status-job-company {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.status-job-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px var(--space-xs);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.status-date {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
 /* ===== DIGEST STATES ===== */
 .digest-blocking,
 .digest-empty {
