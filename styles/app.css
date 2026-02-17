@@ -1,0 +1,214 @@
+/* Job Notification Tracker App Styles */
+
+/* ===== TOP NAVIGATION ===== */
+.top-navigation {
+    background-color: var(--color-card-background);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 72px;
+}
+
+.nav-brand h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--color-text-primary);
+}
+
+/* Desktop Navigation */
+.desktop-nav {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    padding: var(--space-xs) 0;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-normal);
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--color-text-primary);
+}
+
+.nav-link.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-xs);
+    gap: 4px;
+}
+
+.hamburger-menu span {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    transition: all var(--transition-normal);
+}
+
+.hamburger-menu.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-menu.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    background-color: var(--color-card-background);
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-md) 0;
+    gap: var(--space-sm);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-normal);
+}
+
+.mobile-nav.open {
+    max-height: 300px;
+}
+
+.mobile-nav .nav-link {
+    padding: var(--space-sm) var(--space-lg);
+    border-bottom: none;
+    border-left: 3px solid transparent;
+}
+
+.mobile-nav .nav-link.active {
+    border-left-color: var(--color-accent);
+    border-bottom: none;
+}
+
+/* ===== MAIN CONTENT AREA ===== */
+.app-main {
+    min-height: calc(100vh - 72px);
+    background-color: var(--color-background);
+}
+
+.page-content {
+    display: none;
+    padding: var(--space-xl) var(--space-lg);
+    animation: fadeIn var(--transition-normal) ease-in-out;
+}
+
+.page-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: var(--space-xl) 0;
+}
+
+.page-container h1 {
+    font-size: 3rem;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
+}
+
+.page-subtext {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .desktop-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .mobile-nav {
+        display: flex;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background-color: var(--color-card-background);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-container {
+        padding: 0 var(--space-md);
+    }
+    
+    .page-content {
+        padding: var(--space-lg) var(--space-md);
+    }
+    
+    .page-container h1 {
+        font-size: 2.5rem;
+    }
+    
+    .page-container {
+        padding: var(--space-lg) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 var(--space-sm);
+    }
+    
+    .page-content {
+        padding: var(--space-md) var(--space-sm);
+    }
+    
+    .page-container h1 {
+        font-size: 2rem;
+    }
+    
+    .page-subtext {
+        font-size: 1rem;
+    }
+}

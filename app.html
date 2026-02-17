@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification Tracker - KodNest Premium Build System</title>
+    <link rel="stylesheet" href="styles/design-system.css">
+    <link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+    <!-- TOP NAVIGATION -->
+    <nav class="top-navigation">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Job Notification Tracker</h1>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-menu desktop-nav">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+                <a href="#saved" class="nav-link" data-page="saved">Saved</a>
+                <a href="#digest" class="nav-link" data-page="digest">Digest</a>
+                <a href="#settings" class="nav-link" data-page="settings">Settings</a>
+                <a href="#proof" class="nav-link" data-page="proof">Proof</a>
+            </div>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="hamburger-menu" id="hamburgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="nav-menu mobile-nav" id="mobileNav">
+            <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+            <a href="#saved" class="nav-link" data-page="saved">Saved</a>
+            <a href="#digest" class="nav-link" data-page="digest">Digest</a>
+            <a href="#settings" class="nav-link" data-page="settings">Settings</a>
+            <a href="#proof" class="nav-link" data-page="proof">Proof</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="app-main">
+        <!-- Dashboard Page -->
+        <section class="page-content active" id="dashboard-page">
+            <div class="page-container">
+                <h1>Dashboard</h1>
+                <p class="page-subtext">This section will be built in the next step.</p>
+            </div>
+        </section>
+
+        <!-- Saved Page -->
+        <section class="page-content" id="saved-page">
+            <div class="page-container">
+                <h1>Saved</h1>
+                <p class="page-subtext">This section will be built in the next step.</p>
+            </div>
+        </section>
+
+        <!-- Digest Page -->
+        <section class="page-content" id="digest-page">
+            <div class="page-container">
+                <h1>Digest</h1>
+                <p class="page-subtext">This section will be built in the next step.</p>
+            </div>
+        </section>
+
+        <!-- Settings Page -->
+        <section class="page-content" id="settings-page">
+            <div class="page-container">
+                <h1>Settings</h1>
+                <p class="page-subtext">This section will be built in the next step.</p>
+            </div>
+        </section>
+
+        <!-- Proof Page -->
+        <section class="page-content" id="proof-page">
+            <div class="page-container">
+                <h1>Proof</h1>
+                <p class="page-subtext">This section will be built in the next step.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page-content');
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const mobileNav = document.getElementById('mobileNav');
+
+            // Handle navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    document.querySelectorAll(`[data-page="${targetPage}"]`).forEach(navLink => {
+                        navLink.classList.add('active');
+                    });
+                    
+                    // Show corresponding page
+                    pages.forEach(page => page.classList.remove('active'));
+                    document.getElementById(`${targetPage}-page`).classList.add('active');
+                    
+                    // Close mobile menu
+                    mobileNav.classList.remove('open');
+                    hamburgerMenu.classList.remove('open');
+                });
+            });
+
+            // Handle hamburger menu toggle
+            hamburgerMenu.addEventListener('click', function() {
+                this.classList.toggle('open');
+                mobileNav.classList.toggle('open');
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!hamburgerMenu.contains(e.target) && !mobileNav.contains(e.target)) {
+                    hamburgerMenu.classList.remove('open');
+                    mobileNav.classList.remove('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
