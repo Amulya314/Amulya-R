@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components - KodNest Premium Build System</title>
+    <link rel="stylesheet" href="styles/design-system.css">
+</head>
+<body>
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <div class="project-name">
+            <strong>Component Library</strong>
+        </div>
+        <div class="progress-indicator">
+            Reference Guide
+        </div>
+        <div class="status-badge status-shipped">
+            Complete
+        </div>
+    </header>
+
+    <!-- CONTEXT HEADER -->
+    <section class="context-header">
+        <h1>Component Documentation</h1>
+        <p class="subtext">Complete reference for all KodNest design system components</p>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- PRIMARY WORKSPACE -->
+        <section class="primary-workspace">
+            <!-- Buttons Section -->
+            <div class="card">
+                <h3>Buttons</h3>
+                <div class="form-group">
+                    <button class="btn btn-primary">Primary Button</button>
+                    <button class="btn btn-secondary" style="margin-left: 8px;">Secondary Button</button>
+                    <button class="btn btn-success" style="margin-left: 8px;">Success Button</button>
+                    <button class="btn btn-warning" style="margin-left: 8px;">Warning Button</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" disabled>Disabled Primary</button>
+                    <button class="btn btn-secondary" disabled style="margin-left: 8px;">Disabled Secondary</button>
+                </div>
+            </div>
+
+            <!-- Form Elements Section -->
+            <div class="card">
+                <h3>Form Elements</h3>
+                <div class="form-group">
+                    <label class="form-label">Text Input</label>
+                    <input type="text" class="form-input" placeholder="Enter text here...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Input</label>
+                    <input type="email" class="form-input" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Textarea</label>
+                    <textarea class="form-input form-textarea" placeholder="Enter longer text here..."></textarea>
+                </div>
+            </div>
+
+            <!-- Status Badges Section -->
+            <div class="card">
+                <h3>Status Badges</h3>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+                    <span class="status-badge status-not-started">Not Started</span>
+                    <span class="status-badge status-in-progress">In Progress</span>
+                    <span class="status-badge status-shipped">Shipped</span>
+                </div>
+                <p>Use status badges to indicate the current state of projects, tasks, or processes.</p>
+            </div>
+
+            <!-- Cards Section -->
+            <div class="card">
+                <h3>Cards</h3>
+                <p>Cards are used to group related content and actions. They have subtle borders and balanced padding.</p>
+                <div class="card" style="margin-top: 16px;">
+                    <h4>Nested Card Example</h4>
+                    <p>This demonstrates how cards can be nested while maintaining visual hierarchy.</p>
+                </div>
+            </div>
+
+            <!-- Error States Section -->
+            <div class="card">
+                <h3>Error & Empty States</h3>
+                <div class="error-state">
+                    <h3>Something went wrong</h3>
+                    <p>We couldn't load your data. Please check your connection and try again.</p>
+                    <button class="btn btn-primary" style="margin-top: 16px;">Retry</button>
+                </div>
+                <div class="empty-state" style="margin-top: 24px;">
+                    <h3>No items found</h3>
+                    <p>Start by adding your first item to get started.</p>
+                    <button class="btn btn-primary" style="margin-top: 16px;">Add First Item</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECONDARY PANEL -->
+        <aside class="secondary-panel">
+            <div class="step-explanation">
+                <h4>Usage Guidelines</h4>
+                <p>All components follow the same design principles with consistent spacing, colors, and interactions.</p>
+            </div>
+            
+            <div class="prompt-box">
+                <button class="copy-button" onclick="copyComponentCode()">Copy</button>
+                <pre>&lt;button class="btn btn-primary"&gt;
+  Primary Action
+&lt;/button&gt;</pre>
+            </div>
+            
+            <div class="card">
+                <h4>Design Principles</h4>
+                <ul style="padding-left: 20px; line-height: 1.7;">
+                    <li>Consistent spacing scale</li>
+                    <li>Minimal color palette</li>
+                    <li>Clear visual hierarchy</li>
+                    <li>Accessible interactions</li>
+                    <li>Calm, professional appearance</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h4>Color Palette</h4>
+                <div style="display: grid; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 24px; height: 24px; background: #F7F6F3; border: 1px solid #E5E5E5;"></div>
+                        <span>Background: #F7F6F3</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 24px; height: 24px; background: #111111;"></div>
+                        <span>Text: #111111</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 24px; height: 24px; background: #8B0000;"></div>
+                        <span>Accent: #8B0000</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 24px; height: 24px; background: #6B8E23;"></div>
+                        <span>Success: #6B8E23</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 24px; height: 24px; background: #D4A017;"></div>
+                        <span>Warning: #D4A017</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- PROOF FOOTER -->
+    <footer class="proof-footer">
+        <div class="proof-checklist">
+            <div class="proof-item">
+                <div class="proof-checkbox checked" onclick="toggleCheckbox(this)"></div>
+                <span>Components Built</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox checked" onclick="toggleCheckbox(this)"></div>
+                <span>Documentation Complete</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox checked" onclick="toggleCheckbox(this)"></div>
+                <span>Style Guide Ready</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox" onclick="toggleCheckbox(this)"></div>
+                <span>Team Trained</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleCheckbox(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+        
+        function copyComponentCode() {
+            const codeText = document.querySelector('.prompt-box pre').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const copyBtn = document.querySelector('.copy-button');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

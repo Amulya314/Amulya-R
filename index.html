@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodNest Premium Build System</title>
+    <link rel="stylesheet" href="styles/design-system.css">
+</head>
+<body>
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <div class="project-name">
+            <strong>KodNest Premium Build System</strong>
+        </div>
+        <div class="progress-indicator">
+            Step 1 / 4
+        </div>
+        <div class="status-badge status-in-progress">
+            In Progress
+        </div>
+    </header>
+
+    <!-- CONTEXT HEADER -->
+    <section class="context-header">
+        <h1>Design System Foundation</h1>
+        <p class="subtext">A calm, intentional, and coherent design system for professional B2C products</p>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- PRIMARY WORKSPACE -->
+        <section class="primary-workspace">
+            <div class="card">
+                <h3>Component Showcase</h3>
+                <p>Explore the core components of the KodNest design system.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Sample Input Field</label>
+                    <input type="text" class="form-input" placeholder="Enter your text here...">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Sample Textarea</label>
+                    <textarea class="form-input form-textarea" placeholder="Enter longer text here..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-primary">Primary Action</button>
+                    <button class="btn btn-secondary" style="margin-left: 8px;">Secondary Action</button>
+                    <button class="btn btn-success" style="margin-left: 8px;">Success</button>
+                    <button class="btn btn-warning" style="margin-left: 8px;">Warning</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Typography Examples</h3>
+                <h1>Heading 1 - Large & Confident</h1>
+                <h2>Heading 2 - Clear Hierarchy</h2>
+                <h3>Heading 3 - Structured Content</h3>
+                <h4>Heading 4 - Subtle Emphasis</h4>
+                <p>This is body text with proper line-height and spacing. It should be easy to read and maintain a maximum width of 720px for optimal readability.</p>
+                <p>The design system emphasizes clarity and consistency across all typographic elements.</p>
+            </div>
+            
+            <div class="card">
+                <h3>Status Indicators</h3>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <span class="status-badge status-not-started">Not Started</span>
+                    <span class="status-badge status-in-progress">In Progress</span>
+                    <span class="status-badge status-shipped">Shipped</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECONDARY PANEL -->
+        <aside class="secondary-panel">
+            <div class="step-explanation">
+                <h4>Current Step</h4>
+                <p>Building the foundational design system with consistent colors, typography, and spacing.</p>
+            </div>
+            
+            <div class="prompt-box">
+                <button class="copy-button" onclick="copyPrompt()">Copy</button>
+                <pre>Create a premium design system with:
+- Calm, intentional design
+- Consistent spacing scale
+- Professional typography
+- Minimal color palette</pre>
+            </div>
+            
+            <div class="action-buttons" style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-primary">Build in Lovable</button>
+                <button class="btn btn-success">It Worked</button>
+                <button class="btn btn-warning">Error</button>
+                <button class="btn btn-secondary">Add Screenshot</button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- PROOF FOOTER -->
+    <footer class="proof-footer">
+        <div class="proof-checklist">
+            <div class="proof-item">
+                <div class="proof-checkbox" onclick="toggleCheckbox(this)"></div>
+                <span>UI Built</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox" onclick="toggleCheckbox(this)"></div>
+                <span>Logic Working</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox" onclick="toggleCheckbox(this)"></div>
+                <span>Test Passed</span>
+            </div>
+            <div class="proof-item">
+                <div class="proof-checkbox" onclick="toggleCheckbox(this)"></div>
+                <span>Deployed</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleCheckbox(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+        
+        function copyPrompt() {
+            const promptText = document.querySelector('.prompt-box pre').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const copyBtn = document.querySelector('.copy-button');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
