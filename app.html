@@ -148,9 +148,22 @@
         <section class="page-content" id="digest-page">
             <div class="page-container">
                 <h1>Daily Digest</h1>
-                <div class="empty-state">
-                    <h3>No digest available</h3>
-                    <p>Your personalized job digest will be delivered daily at 9AM.</p>
+                
+                <!-- Digest Generation -->
+                <div class="digest-controls">
+                    <button class="btn btn-primary btn-large" onclick="generateDigest()">
+                        Generate Today's 9AM Digest (Simulated)
+                    </button>
+                </div>
+                
+                <!-- Simulation Note -->
+                <div class="simulation-note">
+                    <small>Demo Mode: Daily 9AM trigger simulated manually.</small>
+                </div>
+                
+                <!-- Digest Content -->
+                <div id="digestContent">
+                    <!-- Digest will be rendered here -->
                 </div>
             </div>
         </section>

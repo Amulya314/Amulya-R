@@ -503,6 +503,169 @@ function renderSavedJobs() {
     savedContainer.innerHTML = savedJobObjects.map(job => createJobCard(job)).join('');
 }
 
+// Generate daily digest
+function generateDigest() {
+    if (!userPreferences) {
+        document.getElementById('digestContent').innerHTML = `
+            <div class="digest-blocking">
+                <h3>Set preferences to generate a personalized digest.</h3>
+                <p>Go to Settings to configure your job preferences first.</p>
+                <button class="btn btn-primary" onclick="navigateToSettings()">Set Preferences</button>
+            </div>
+        `;
+        return;
+    }
+    
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const digestKey = `jobTrackerDigest_${today}`;
+    
+    // Check if digest already exists for today
+    const existingDigest = localStorage.getItem(digestKey);
+    if (existingDigest) {
+        renderDigest(JSON.parse(existingDigest));
+        return;
+    }
+    
+    // Calculate match scores and get top 10 jobs
+    const jobsWithScores = allJobs.map(job => ({
+        ...job,
+        matchScore: calculateMatchScore(job)
+    }));
+    
+    // Sort by matchScore descending, then postedDaysAgo ascending
+    jobsWithScores.sort((a, b) => {
+        if (b.matchScore !== a.matchScore) {
+            return b.matchScore - a.matchScore;
+        }
+        return a.postedDaysAgo - b.postedDaysAgo;
+    });
+    
+    const topJobs = jobsWithScores.slice(0, 10);
+    
+    if (topJobs.length === 0) {
+        document.getElementById('digestContent').innerHTML = `
+            <div class="digest-empty">
+                <h3>No matching roles today</h3>
+                <p>Check again tomorrow for new opportunities.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Create digest object
+    const digest = {
+        date: today,
+        jobs: topJobs,
+        generatedAt: new Date().toISOString()
+    };
+    
+    // Store in localStorage
+    localStorage.setItem(digestKey, JSON.stringify(digest));
+    
+    // Render digest
+    renderDigest(digest);
+}
+
+// Render digest UI
+function renderDigest(digest) {
+    const digestDate = new Date(digest.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    const digestHTML = `
+        <div class="digest-email">
+            <div class="digest-header">
+                <h2>Top 10 Jobs For You — 9AM Digest</h2>
+                <p class="digest-date">${digestDate}</p>
+            </div>
+            
+            <div class="digest-jobs">
+                ${digest.jobs.map((job, index) => createDigestJob(job, index + 1)).join('')}
+            </div>
+            
+            <div class="digest-footer">
+                <p>This digest was generated based on your preferences.</p>
+                <div class="digest-actions">
+                    <button class="btn btn-secondary" onclick="copyDigestToClipboard()">Copy Digest to Clipboard</button>
+                    <button class="btn btn-primary" onclick="createEmailDraft()">Create Email Draft</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('digestContent').innerHTML = digestHTML;
+}
+
+// Create digest job item
+function createDigestJob(job, index) {
+    const matchColorClass = getMatchScoreColor(job.matchScore);
+    
+    return `
+        <div class="digest-job">
+            <div class="digest-job-number">${index}</div>
+            <div class="digest-job-content">
+                <div class="digest-job-title">${job.title}</div>
+                <div class="digest-job-company">${job.company}</div>
+                <div class="digest-job-details">
+                    <span class="digest-location">📍 ${job.location}</span>
+                    <span class="digest-experience">💼 ${job.experience}</span>
+                    <span class="digest-match-score ${matchColorClass}">${job.matchScore}% Match</span>
+                </div>
+            </div>
+            <div class="digest-job-action">
+                <button class="btn btn-primary" onclick="applyForJob('${job.applyUrl}')">Apply</button>
+            </div>
+        </div>
+    `;
+}
+
+// Copy digest to clipboard
+function copyDigestToClipboard() {
+    const today = new Date().toISOString().split('T')[0];
+    const digestKey = `jobTrackerDigest_${today}`;
+    const digest = JSON.parse(localStorage.getItem(digestKey));
+    
+    if (!digest) return;
+    
+    const digestText = `Top 10 Jobs For You — 9AM Digest\n\n${digest.jobs.map((job, index) => 
+        `${index + 1}. ${job.title}\n   ${job.company} | ${job.location} | ${job.experience} | ${job.matchScore}% Match\n   Apply: ${job.applyUrl}`
+    ).join('\n\n')}\n\nThis digest was generated based on your preferences.`;
+    
+    navigator.clipboard.writeText(digestText).then(() => {
+        // Show success feedback
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+    });
+}
+
+// Create email draft
+function createEmailDraft() {
+    const today = new Date().toISOString().split('T')[0];
+    const digestKey = `jobTrackerDigest_${today}`;
+    const digest = JSON.parse(localStorage.getItem(digestKey));
+    
+    if (!digest) return;
+    
+    const digestText = `Top 10 Jobs For You — 9AM Digest\n\n${digest.jobs.map((job, index) => 
+        `${index + 1}. ${job.title}\n   ${job.company} | ${job.location} | ${job.experience} | ${job.matchScore}% Match\n   Apply: ${job.applyUrl}`
+    ).join('\n\n')}\n\nThis digest was generated based on your preferences.`;
+    
+    const subject = encodeURIComponent('My 9AM Job Digest');
+    const body = encodeURIComponent(digestText);
+    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+    
+    window.open(mailtoUrl, '_blank');
+}
+
 // Navigate to settings
 function navigateToSettings() {
     const navLinks = document.querySelectorAll('.nav-link');
