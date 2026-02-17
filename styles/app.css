@@ -727,28 +727,138 @@
     font-style: italic;
 }
 
-/* ===== DIGEST STATES ===== */
-.digest-blocking,
-.digest-empty {
+/* ===== TEST PAGE ===== */
+#test-page {
+    background-color: var(--color-background);
+}
+
+.test-summary {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
     background-color: var(--color-card-background);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--space-xl);
+}
+
+.test-count {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.test-count span {
+    color: var(--color-success);
+}
+
+.test-warning {
+    background-color: var(--color-warning);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-sm);
+    font-weight: 500;
+}
+
+.test-checklist {
+    background-color: var(--color-card-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: var(--space-sm);
+    transform: scale(1.2);
+}
+
+.checklist-item label {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.test-help {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-top: var(--space-xs);
+    line-height: 1.4;
+}
+
+.test-actions {
     text-align: center;
+    margin-top: var(--space-xl);
+}
+
+/* ===== SHIP PAGE ===== */
+#ship-page {
+    background-color: var(--color-background);
+}
+
+.ship-locked {
+    text-align: center;
+    padding: var(--space-xl);
+    background-color: var(--color-card-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
     max-width: 600px;
     margin: 0 auto;
 }
 
-.digest-blocking h3,
-.digest-empty h3 {
-    margin-bottom: var(--space-sm);
-    color: var(--color-text-primary);
+.ship-locked.unlocked {
+    border-color: var(--color-success);
+    background-color: var(--color-success);
 }
 
-.digest-blocking p,
-.digest-empty p {
-    color: var(--color-text-secondary);
+.ship-locked.unlocked .lock-icon {
+    color: white;
+}
+
+.ship-locked h2 {
+    color: var(--color-text-primary);
     margin-bottom: var(--space-md);
+}
+
+.ship-locked p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.test-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-border);
+    border-radius: var(--radius-sm);
+    margin: var(--space-lg) 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--color-accent);
+    transition: width var(--transition-normal);
+}
+
+.ship-locked.unlocked .progress-fill {
+    background-color: var(--color-success);
 }
 
 /* ===== RESPONSIVE DESIGN ===== */

@@ -18,11 +18,13 @@
             
             <!-- Desktop Navigation -->
             <div class="nav-menu desktop-nav">
-                <a href="#home" class="nav-link active" data-page="home">Home</a>
+                <a href="#home" class="nav-link" data-page="home">Home</a>
                 <a href="#dashboard" class="nav-link" data-page="dashboard">Dashboard</a>
                 <a href="#saved" class="nav-link" data-page="saved">Saved</a>
                 <a href="#digest" class="nav-link" data-page="digest">Digest</a>
                 <a href="#settings" class="nav-link" data-page="settings">Settings</a>
+                <a href="#test" class="nav-link" data-page="test">Test</a>
+                <a href="#ship" class="nav-link" data-page="ship">Ship</a>
                 <a href="#proof" class="nav-link" data-page="proof">Proof</a>
             </div>
             
@@ -36,11 +38,13 @@
         
         <!-- Mobile Navigation -->
         <div class="nav-menu mobile-nav" id="mobileNav">
-            <a href="#home" class="nav-link active" data-page="home">Home</a>
+            <a href="#home" class="nav-link" data-page="home">Home</a>
             <a href="#dashboard" class="nav-link" data-page="dashboard">Dashboard</a>
             <a href="#saved" class="nav-link" data-page="saved">Saved</a>
             <a href="#digest" class="nav-link" data-page="digest">Digest</a>
             <a href="#settings" class="nav-link" data-page="settings">Settings</a>
+            <a href="#test" class="nav-link" data-page="test">Test</a>
+            <a href="#ship" class="nav-link" data-page="ship">Ship</a>
             <a href="#proof" class="nav-link" data-page="proof">Proof</a>
         </div>
     </nav>
@@ -256,13 +260,102 @@
             </div>
         </section>
 
-        <!-- Proof Page -->
-        <section class="page-content" id="proof-page">
+        <!-- Test Page -->
+        <section class="page-content" id="test-page">
             <div class="page-container">
-                <h1>Proof</h1>
-                <div class="empty-state">
-                    <h3>Artifact Collection</h3>
-                    <p>This section will contain proof of work and completed tasks.</p>
+                <h1>Built-In Test Checklist</h1>
+                
+                <!-- Test Result Summary -->
+                <div class="test-summary">
+                    <div class="test-count">
+                        Tests Passed: <span id="testCount">0</span> / 10
+                    </div>
+                    <div class="test-warning" id="testWarning" style="display: none;">
+                        Resolve all issues before shipping.
+                    </div>
+                </div>
+                
+                <!-- Test Checklist -->
+                <div class="test-checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test1" onchange="updateTestProgress()">
+                        <label for="test1">Preferences persist after refresh</label>
+                        <small class="test-help">How to test: Set preferences, refresh page, verify they remain</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test2" onchange="updateTestProgress()">
+                        <label for="test2">Match score calculates correctly</label>
+                        <small class="test-help">How to test: Check jobs have reasonable match scores based on preferences</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test3" onchange="updateTestProgress()">
+                        <label for="test3">"Show only matches" toggle works</label>
+                        <small class="test-help">How to test: Set preferences, enable toggle, verify filtering</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test4" onchange="updateTestProgress()">
+                        <label for="test4">Save job persists after refresh</label>
+                        <small class="test-help">How to test: Save a job, refresh page, verify it remains saved</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test5" onchange="updateTestProgress()">
+                        <label for="test5">Apply opens in new tab</label>
+                        <small class="test-help">How to test: Click apply button, verify new tab opens</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test6" onchange="updateTestProgress()">
+                        <label for="test6">Status update persists after refresh</label>
+                        <small class="test-help">How to test: Change job status, refresh page, verify it remains</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test7" onchange="updateTestProgress()">
+                        <label for="test7">Status filter works correctly</label>
+                        <small class="test-help">How to test: Use status filter, verify correct jobs show</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test8" onchange="updateTestProgress()">
+                        <label for="test8">Digest generates top 10 by score</label>
+                        <small class="test-help">How to test: Generate digest, verify top 10 jobs sorted by match score</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test9" onchange="updateTestProgress()">
+                        <label for="test9">Digest persists for the day</label>
+                        <small class="test-help">How to test: Generate digest, refresh, verify same digest loads</small>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test10" onchange="updateTestProgress()">
+                        <label for="test10">No console errors on main pages</label>
+                        <small class="test-help">How to test: Browse all pages, check console for errors</small>
+                    </div>
+                </div>
+                
+                <!-- Reset Button -->
+                <div class="test-actions">
+                    <button class="btn btn-secondary" onclick="resetTestStatus()">Reset Test Status</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Ship Page -->
+        <section class="page-content" id="ship-page">
+            <div class="page-container">
+                <h1>Ship Lock</h1>
+                <div class="ship-locked">
+                    <div class="lock-icon">🔒</div>
+                    <h2>Route Locked Until All Tests Pass</h2>
+                    <p>Complete all 10 test items to unlock shipping.</p>
+                    <div class="test-progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -279,5 +372,92 @@
 
     <script src="js/jobs-data.js"></script>
     <script src="js/app.js"></script>
+    <script>
+        // Test checklist functionality
+        let testResults = {};
+        
+        // Load test results from localStorage
+        function loadTestResults() {
+            const saved = localStorage.getItem('testResults');
+            testResults = saved ? JSON.parse(saved) : {};
+            updateTestProgress();
+        }
+        
+        // Save test results to localStorage
+        function saveTestResults() {
+            localStorage.setItem('testResults', JSON.stringify(testResults));
+        }
+        
+        // Update test progress
+        function updateTestProgress() {
+            const checkboxes = document.querySelectorAll('.test-checklist input[type="checkbox"]');
+            let checkedCount = 0;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkedCount++;
+                    testResults[checkbox.id] = true;
+                } else {
+                    testResults[checkbox.id] = false;
+                }
+            });
+            
+            saveTestResults();
+            updateTestDisplay(checkedCount);
+            updateShipLock(checkedCount);
+        }
+        
+        // Update test display
+        function updateTestDisplay(checkedCount) {
+            document.getElementById('testCount').textContent = checkedCount;
+            const warning = document.getElementById('testWarning');
+            if (checkedCount < 10) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+        
+        // Update ship lock
+        function updateShipLock(checkedCount) {
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = (checkedCount / 10) * 100;
+            progressFill.style.width = progressPercent + '%';
+            
+            // Lock/unlock ship page
+            const shipPage = document.getElementById('ship-page');
+            const testPage = document.getElementById('test-page');
+            
+            if (checkedCount === 10) {
+                shipPage.classList.add('unlocked');
+                testPage.classList.add('completed');
+            } else {
+                shipPage.classList.remove('unlocked');
+                testPage.classList.remove('completed');
+            }
+        }
+        
+        // Reset test status
+        function resetTestStatus() {
+            if (confirm('Reset all test progress?')) {
+                testResults = {};
+                saveTestResults();
+                
+                // Reset all checkboxes
+                const checkboxes = document.querySelectorAll('.test-checklist input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                updateTestProgress();
+                showStatusToast('Test status reset');
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTestResults();
+        });
+    </script>
 </body>
 </html>
